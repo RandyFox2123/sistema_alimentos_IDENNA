@@ -1,0 +1,41 @@
+
+
+@import 'base.css';
+
+
+
+.carta_error{
+    background-color: rgba(232, 240, 248, 0.952);
+    border: 2px solid rgb(252, 127, 137);
+    border-radius: 10px;
+    width: 50%;
+    height: auto;
+    margin: 20px auto 15px auto;
+    padding-bottom: 20px;
+
+    /*Especialmente para centrar el texto*/
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px 0px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 70px rgb(145, 158, 168);
+}
+
+
+.titulo_error{
+    color: rgb(212, 16, 75);
+    margin: 0px;
+}
+
+.imagen_error{
+    width: 30%;
+    height: 30%;
+}
+
+.texto_informativo{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
