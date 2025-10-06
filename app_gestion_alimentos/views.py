@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_safe, require_http_methods, require_POST
 from openpyxl import Workbook
-from  . models import Almacen, Alimento
+from  . models import Almacen, Alimento, Medida
 import os
 import logging
 from django.conf import settings
@@ -113,39 +113,59 @@ def panel_principal(request):
 @require_http_methods(["GET", "POST"])
 def registrar_alimento(request):
     almacenes_activos = Almacen.objects.filter(estado=True)
+    todas_medidas = Medida.objects.all()
+    
     if request.method == 'POST':
         desc_alimento = request.POST.get('desc_alimento', '').strip()
         almacen_id = request.POST.get('almacen_perteneciente')
         imagen = request.FILES.get('imagen_alimento')
         cantidad_str = request.POST.get('cantidad', '0').strip()
+        
+        
+        medida_recibida = request.POST.get('medida', None)
+        if medida_recibida != None and medida_recibida.isdigit(): 
+            medida_recibida = int(medida_recibida)
+            if medida_recibida < 0: error_contexto("Se ha recibido un tipo de cantidad invalido")
+            else:medida_obj = Medida.objects.filter(pk=int(medida_recibida)).first()
+             
+        else:
+            error_contexto("Se ha recibido un tipo de cantidad invalido")
+             
 
         if Alimento.objects.filter(desc_alimento__iexact=desc_alimento).exists():
-            raise error_contexto("Ya existe un alimento con esta descripción.")
+            raise error_contexto("Ya existe un alimento con esta descripcion.")
 
         if not desc_alimento:
-            raise error_contexto("La descripción es obligatoria.")
+            raise error_contexto("La descripcion es obligatoria.")
 
         try:
             cantidad = float(cantidad_str.replace(',', '.'))
-            if cantidad < 0:
-                raise error_contexto("La cantidad debe ser un número mayor o igual a 0.")
+            #return HttpResponse(f"Cantidad:{cantidad} tipo dato:{type(cantidad)}")
+        
+            if cantidad < 0 or cantidad > 50000:
+                raise error_contexto("La cantidad debe ser un numero mayor o igual a 0 o maximo 50000")
+            
         except ValueError:
-            raise error_contexto("La cantidad debe ser un número válido.")
+            raise error_contexto("La cantidad debe ser un numero valido.")
 
         almacen_obj = None
         if almacen_id and almacen_id.isdigit():
             almacen_obj = Almacen.objects.filter(pk=int(almacen_id), estado=True).first()
-
-        nuevo_alimento = Alimento(desc_alimento=desc_alimento, almacen_perteneciente=almacen_obj, cantidad=cantidad)
-        if imagen:
-            nuevo_alimento.imagen_alimento = imagen
-
+            
+        #Esta es la parte donde se crea el alimento
+        nuevo_alimento = Alimento(
+            desc_alimento=desc_alimento, 
+            almacen_perteneciente=almacen_obj, 
+            cantidad=cantidad, 
+            medida_alimento=medida_obj,
+        )
+        if imagen: nuevo_alimento.imagen_alimento = imagen
         nuevo_alimento.save()
 
         url_redireccion = request.session.get('url_panel_principal', reverse('panel_principal'))
         return HttpResponseRedirect(url_redireccion)
 
-    return render(request, 'registrar_alimento.html', {'almacenes_activos': almacenes_activos})
+    return render(request, 'registrar_alimento.html', {'almacenes_activos': almacenes_activos, "medidas":todas_medidas})
 
 
 @manejo_errores
@@ -153,6 +173,7 @@ def registrar_alimento(request):
 def editar_alimento(request, id_alimento):
     alimento_obj = get_object_or_404(Alimento, pk=id_alimento)
     almacenes_activos = Almacen.objects.filter(estado=True)
+    medidas = Medida.objects.all()
 
     if request.method == 'POST':
         desc_alimento = request.POST.get('desc_alimento', '').strip()
@@ -163,7 +184,7 @@ def editar_alimento(request, id_alimento):
 
         if desc_alimento_vieja != desc_alimento:
             if Alimento.objects.filter(desc_alimento__iexact=desc_alimento).exists():
-                raise error_contexto("Ya existe un alimento con esta descripción.")
+                raise error_contexto("Ya existe un alimento con esta descripcion.")
         else:
             desc_alimento = desc_alimento_vieja
 
@@ -175,8 +196,8 @@ def editar_alimento(request, id_alimento):
 
         try:
             cantidad = float(cantidad_str.replace(',', '.'))
-            if cantidad < 0:
-                raise error_contexto("La cantidad debe ser un número mayor o igual a 0.")
+            if cantidad < 0 or cantidad > 50000:
+                raise error_contexto("La cantidad debe ser un numero mayor o igual a 0 o maximo 50000")
         except ValueError:
             raise error_contexto("La cantidad debe ser un número válido.")
 
@@ -199,7 +220,8 @@ def editar_alimento(request, id_alimento):
 
     contexto = {
         'alimento_obj': alimento_obj,
-        'almacenes_activos': almacenes_activos
+        'almacenes_activos': almacenes_activos,
+        'medidas': medidas
     }
     return render(request, 'editar_alimento.html', contexto)
 

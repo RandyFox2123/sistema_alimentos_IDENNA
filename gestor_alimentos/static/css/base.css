@@ -47,6 +47,14 @@
     font-size: 25px;
     font-style: italic;
     color: rgb(205, 250, 239);
+    margin: 2px
+}
+
+.titulo2{
+    font-size: 25px;
+    font-style: italic;
+    color: rgb(32, 68, 59);
+    margin: 2px
 }
 
 .navegacion_links{

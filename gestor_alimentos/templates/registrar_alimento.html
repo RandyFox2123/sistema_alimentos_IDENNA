@@ -8,10 +8,10 @@
 
 {% block body %}
 <main>
-
+    
     <form method="post" enctype="multipart/form-data" class="form">
         {% csrf_token %}
-        <h1 class="titulo">Registrar nuevo alimento</h1>
+        <h1 class="titulo2">Registrar nuevo alimento</h1>
 
         <div class="contenedor_campo_img">
             <label for="imagen_alimento" class="custom-file-upload">Imagen</label>
@@ -40,9 +40,19 @@
         </div>
         
         <div class="contenedor_campo">
-            <label for="cantidad">Cantidad (gramos):</label>
+            <label for="cantidad">Cantidad:</label>
+            <!--POr aca esa la valdiacion de los digitos despuyes-->
             <input type="number" step="0.01" id="cantidad" name="cantidad" min="0" max="50000" value="{{ cantidad|default_if_none:'0' }}" required class="campo">
-        </div>    
+        </div>
+
+        <div class="contenedor_campo">
+            <label for="cantidad">Tipo de medida:</label>
+            <select name="medida" class="campo">
+                {% for medidas_leidas in medidas %}
+                <option value="{{medidas_leidas.id_medida}}">{{medidas_leidas.desc_medida}}</option>
+                {% endfor %}
+            </select>
+        </div>  
 
         <div class="contenedor_campo">
             <label for="almacen_perteneciente">Perteneciente:</label>

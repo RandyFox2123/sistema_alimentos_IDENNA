@@ -63,13 +63,15 @@
                         {% endif %}
                     </p>
                     <p class="desc_alimento">
-                        <span class="span_desc_alimento">Cantidad (gramos):</span> {{ alimento.cantidad }}</p> 
-
+                        <span class="span_desc_alimento">Cantidad:</span>
+                         {{ alimento.cantidad }} ({{ alimento.medida_alimento.desc_medida }})
+                    </p>
+                                        
                     <div class="caja_acciones" style="display:flex; gap:10px;">
                         <button type="button" class="btn_sumar" 
                             data-id="{{ alimento.id_alimento }}" 
                             data-desc="{{ alimento.desc_alimento }}" 
-                            data-cantidad="{{ alimento.cantidad }}">+</button>
+                            data-cantidad="{{ alimento.cantidad}}">+</button>
 
                         <button type="button" class="btn_restar" 
                             data-id="{{ alimento.id_alimento }}" 
@@ -107,7 +109,7 @@
                 {% csrf_token %}
                 <p id="texto_suma"></p>
 
-                <label for="cantidad_actual_suma">Cantidad actual (gramos): </label><br>
+                <label for="cantidad_actual_suma">Cantidad actual: </label><br>
                 <p id="cantidad_actual_suma" class="text_cantidad"></p>
                 
                 <input type="number" step="0.01" name="suma" id="input_suma" max="50000" min="0.01" required placeholder="Cantidad a sumar (gramos)" class="campo_form_emergente1">
@@ -125,7 +127,7 @@
                 {% csrf_token %}
                 <p id="texto_resta"></p>
 
-                <label for="cantidad_actual_resta">Cantidad actual (gramos):</label><br>
+                <label for="cantidad_actual_resta">Cantidad actual:</label><br>
                 <p id="cantidad_actual_resta" class="text_cantidad"></p>
 
                 <input type="number" step="0.01" name="resta" id="input_resta" max="" min="0.01" required placeholder="Cantidad a restar (gramos)" class="campo_form_emergente1">

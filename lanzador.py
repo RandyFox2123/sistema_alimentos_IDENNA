@@ -5,7 +5,7 @@ import socket
 import time
 import webbrowser
 
-def check_server_running(host='127.0.0.1', port=8090):
+def check_server_running(host='127.0.0.1', port=8070):
     """Chequea si el servidor Django está activo en host:port"""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.settimeout(1)
@@ -38,7 +38,7 @@ def get_python_path(venv_path):
 
 def launch_django_server(python_exec, manage_path):
     """Lanza servidor Django en segundo plano sin consola visible"""
-    cmd = [python_exec, manage_path, 'runserver']
+    cmd = [python_exec, manage_path, 'runserver', '8070']
 
     if os.name == 'nt':
         # No consola visible en Windows
@@ -76,7 +76,7 @@ def main():
     # Chequear si servidor está corriendo
     if check_server_running():
         print("Servidor Django ya está corriendo. Abriendo navegador...")
-        webbrowser.open('http://127.0.0.1:8090/')
+        webbrowser.open('http://127.0.0.1:8070/')
         return
 
     # Lanzar servidor
@@ -87,7 +87,7 @@ def main():
     time.sleep(3)
 
     # Abrir navegador en la vista index
-    webbrowser.open('http://127.0.0.1:8090/')
+    webbrowser.open('http://127.0.0.1:8070/')
 
 if __name__ == '__main__':
     main()

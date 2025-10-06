@@ -39,3 +39,19 @@
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
+
+.btn_regreso{
+    padding: 4px 10px;
+    background-color: rgb(255, 124, 36);
+    border: 2px solid rgb(255, 175, 109);
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+.btn_regreso:hover{
+    background-color: rgb(252, 145, 58);
+    transition-duration: 0.4s;
+    box-shadow: 0px 0px 20px 0px rgb(255, 180, 95);
+}
